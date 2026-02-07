@@ -8,7 +8,7 @@ Built for **IIT Mandi Hackathon 3.0** | Team **FutureFormers** | Company: **Axes
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.31+-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white)
 
-> **Live Demo:** [https://gapdetectorhackathon30.streamlit.app](https://gapdetectorhackathon30.streamlit.app)
+> **Live Demo:** [https://gapdetectorhackathon30-jhx7edzznqoz3mdrvfgkb2.streamlit.app/](https://gapdetectorhackathon30-jhx7edzznqoz3mdrvfgkb2.streamlit.app/)
 
 ---
 
