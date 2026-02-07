@@ -999,9 +999,11 @@ def create_map(lines: List[LineString], issues: List[Dict]) -> folium.Map:
     all_coords = [norm(c[0], c[1]) for line in lines for c in line.coords]
     m.fit_bounds(all_coords, padding=[30, 30])
 
-    # Inject DM Sans font into folium map so popups use it
+    # Inject DM Sans font into folium map so popups and controls use it
     font_link = '<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">'
+    font_css = '<style>.leaflet-control-layers, .leaflet-popup-content, .leaflet-tooltip { font-family: "DM Sans", sans-serif !important; }</style>'
     m.get_root().header.add_child(folium.Element(font_link))
+    m.get_root().header.add_child(folium.Element(font_css))
 
     # Add hover highlight/thicken effect for all polylines via JavaScript
     hover_js = """
