@@ -1883,23 +1883,23 @@ def main():
                     <div class="legend-grid">
                         <div class="legend-item">
                             <div class="legend-swatch" style="background:#1a1a2e;"></div>
-                            <div class="legend-label"><b>Dark Mode</b> — Dark base map theme for better contrast with colored road segments</div>
+                            <div class="legend-label"><b>🌙 Dark Mode</b> — Dark base map theme for better contrast with colored road segments</div>
                         </div>
                         <div class="legend-item">
                             <div class="legend-swatch" style="background:#f5f5f5;border:1px solid #ccc;"></div>
-                            <div class="legend-label"><b>Light Mode</b> — Light/minimal base map theme, easier on the eyes for detailed inspection</div>
+                            <div class="legend-label"><b>☀️ Light Mode</b> — Light/minimal base map theme, easier on the eyes for detailed inspection</div>
                         </div>
                         <div class="legend-item">
                             <div class="legend-swatch" style="background:#60a5fa;"></div>
-                            <div class="legend-label"><b>Road Network</b> — All healthy road segments with no detected gaps (shown in blue)</div>
+                            <div class="legend-label"><b>🛣️ Road Network</b> — All healthy road segments with no detected gaps (shown in blue)</div>
                         </div>
                         <div class="legend-item">
                             <div class="legend-swatch" style="background:#ef4444;"></div>
-                            <div class="legend-label"><b>Gap Segments</b> — Road segments that have a broken endpoint connection (red = high, orange = medium severity)</div>
+                            <div class="legend-label"><b>⚠️ Gap Segments</b> — Road segments that have a broken endpoint connection (red = high, orange = medium severity)</div>
                         </div>
                         <div class="legend-item">
                             <div class="legend-swatch" style="background:#ef4444;border-radius:50%;"></div>
-                            <div class="legend-label"><b>Gap Locations</b> — Circle markers at exact gap positions. Click for details on why it's an error and how to fix it</div>
+                            <div class="legend-label"><b>📍 Gap Locations</b> — Circle markers at exact gap positions. Click for details on why it's an error and how to fix it</div>
                         </div>
                     </div>
                 </div>
