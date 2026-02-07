@@ -9,7 +9,7 @@
 | **Team Name** | FutureFormers |
 | **Problem Statement Chosen** | Problem 2 |
 | **Team Members** | Puranjay Gambhir (puranjay.gambhir@gmail.com) • Akshobhya Rao (akshobhyaraoap1845@gmail.com) • Rohan (snocky770@gmail.com) |
-| **GitHub Repository Link** | https://github.com/Puranjay2006/axes-map-checker |
+| **GitHub Repository Link** | https://github.com/Puranjay2006/Gap_Detector_Hackathon_3.0 |
 | **Demo Link** | https://axes-map-checker.streamlit.app |
 
 ---
