@@ -677,7 +677,11 @@ class AnomalyDetector:
         X_scaled = self.scaler.fit_transform(X.values)
 
         # Adjust contamination if dataset is small — avoid flagging too many
-        effective_contamination = min(self.contamination, max(0.05, 1.0 / len(features)))
+        if len(features) < 20:
+            max_contamination = max(0.05, 2.0 / len(features))
+            effective_contamination = min(self.contamination, max_contamination)
+        else:
+            effective_contamination = self.contamination
         model = IsolationForest(contamination=effective_contamination, n_estimators=100, random_state=42)
         preds = model.fit_predict(X_scaled)
         scores = model.decision_function(X_scaled)
