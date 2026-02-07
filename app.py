@@ -9,7 +9,7 @@ Uses Feature Extraction + Rule-Based Gap Detection + Isolation Forest ML
 to find, visualize, and auto-fix broken connections.
 
 Team: FutureFormers | IIT Mandi Hackathon 3.0 | Problem Statement 2
-Members: Puranjay Gambhir, Akshobhya Rao, Rohan
+Members: Puranjay Gambhir, Akshobhya Rao, Rohan Kumar
 Company: Axes Systems GmbH | Option B: Rule-Based Geometry Validation
 Version: 7.0.0
 """
@@ -39,7 +39,7 @@ APP_CONFIG = {
     "icon": "🔍",
     "precision": 6,
     "team": "FutureFormers",
-    "members": ["Puranjay Gambhir", "Akshobhya Rao", "Rohan"],
+    "members": ["Puranjay Gambhir", "Akshobhya Rao", "Rohan Kumar"],
     "error_type": "ENDPOINT_GAP",
     "error_label": "Route Continuity Gap",
 }
@@ -1122,7 +1122,7 @@ def render_hero():
             <h1 class="hero-title">Route Continuity Gap Detector</h1>
             <p class="hero-subtitle">Detects endpoint gaps where road segments should connect but don't — breaking route continuity</p>
             <div class="hero-badge"><span>🔗</span><span>ONE Error Type • Rule-Based + ML • Axes Systems GmbH</span></div>
-            <p style="font-size:0.85rem;color:var(--gray-500);margin:0.6rem 0 0;">Built by <b>Puranjay Gambhir</b>, <b>Akshobhya Rao</b> & <b>Rohan</b> — IIT Mandi Hackathon 3.0, 2026</p>
+            <p style="font-size:0.85rem;color:var(--gray-500);margin:0.6rem 0 0;">Built by <b>Puranjay Gambhir</b>, <b>Akshobhya Rao</b> & <b>Rohan Kumar</b> — IIT Mandi Hackathon 3.0, 2026</p>
         </div>
     """, unsafe_allow_html=True)
 
@@ -1774,7 +1774,7 @@ def render_sidebar() -> Tuple[Optional[str], float]:
         st.markdown("""
             <div style="text-align:center;font-size:0.72rem;opacity:0.6;">
                 FutureFormers • IIT Mandi Hackathon 3.0<br>
-                Puranjay · Akshobhya · Rohan<br>
+                Puranjay · Akshobhya · Rohan Kumar<br>
                 Axes Systems GmbH • Option B<br>© 2026
             </div>
         """, unsafe_allow_html=True)

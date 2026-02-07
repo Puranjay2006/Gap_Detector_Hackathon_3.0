@@ -18,7 +18,7 @@ Built for **IIT Mandi Hackathon 3.0** | Team **FutureFormers** | Company: **Axes
 |--------|-------|
 | **Puranjay Gambhir** | puranjay.gambhir@gmail.com |
 | **Akshobhya Rao** | akshobhyaraoap1845@gmail.com |
-| **Rohan** | snocky770@gmail.com |
+| **Rohan Kumar** | snocky770@gmail.com |
 
 ---
 

@@ -8,7 +8,7 @@
 |-------|---------|
 | **Team Name** | FutureFormers |
 | **Problem Statement Chosen** | Problem 2 |
-| **Team Members** | Puranjay Gambhir (puranjay.gambhir@gmail.com) • Akshobhya Rao (akshobhyaraoap1845@gmail.com) • Rohan (snocky770@gmail.com) |
+| **Team Members** | Puranjay Gambhir (puranjay.gambhir@gmail.com) • Akshobhya Rao (akshobhyaraoap1845@gmail.com) • Rohan Kumar (snocky770@gmail.com) |
 | **GitHub Repository Link** | https://github.com/Puranjay2006/Gap_Detector_Hackathon_3.0 |
 | **Demo Link** | https://gapdetectorhackathon30.streamlit.app |
 
@@ -240,6 +240,6 @@ We confirm that this submission is our own work and was developed during the hac
 | Field | Value |
 |-------|-------|
 | **Team Representative Name** | Puranjay Gambhir |
-| **Team Members** | Puranjay Gambhir, Akshobhya Rao, Rohan |
+| **Team Members** | Puranjay Gambhir, Akshobhya Rao, Rohan Kumar |
 | **Confirmation** | Yes |
 | **Date** | February 2026 |
