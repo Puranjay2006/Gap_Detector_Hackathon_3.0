@@ -910,8 +910,8 @@ def create_map(lines: List[LineString], issues: List[Dict]) -> folium.Map:
         return [(y - cy) * scale, (x - cx) * scale]
 
     m = folium.Map(location=[0, 0], zoom_start=15, tiles=None)
-    folium.TileLayer('cartodbdark_matter', name='Dark Mode').add_to(m)
-    folium.TileLayer('cartodbpositron', name='Light Mode').add_to(m)
+    folium.TileLayer('cartodbdark_matter', name='🌙 Dark Mode').add_to(m)
+    folium.TileLayer('cartodbpositron', name='☀️ Light Mode').add_to(m)
 
     flagged_ids = set(i['geometry_id'] for i in issues)
     severity_map = {}
@@ -920,8 +920,8 @@ def create_map(lines: List[LineString], issues: List[Dict]) -> folium.Map:
         if gid not in severity_map or i.get('severity') == 'HIGH':
             severity_map[gid] = i.get('severity', 'MEDIUM')
 
-    road_group = folium.FeatureGroup(name='Road Network')
-    gap_group = folium.FeatureGroup(name='Gap Segments')
+    road_group = folium.FeatureGroup(name='🛣️ Road Network')
+    gap_group = folium.FeatureGroup(name='⚠️ Gap Segments')
     for idx, line in enumerate(lines):
         gid = idx + 1
         coords = [norm(c[0], c[1]) for c in line.coords]
@@ -937,7 +937,7 @@ def create_map(lines: List[LineString], issues: List[Dict]) -> folium.Map:
     gap_group.add_to(m)
 
     if issues:
-        marker_group = folium.FeatureGroup(name='Gap Locations')
+        marker_group = folium.FeatureGroup(name='📍 Gap Locations')
         for issue in issues:
             loc_point = issue.get('location', issue.get('start', (cx, cy)))
             loc = norm(loc_point[0], loc_point[1])
@@ -1001,9 +1001,56 @@ def create_map(lines: List[LineString], issues: List[Dict]) -> folium.Map:
 
     # Inject DM Sans font into folium map so popups and controls use it
     font_link = '<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">'
-    font_css = '<style>.leaflet-control-layers, .leaflet-popup-content, .leaflet-tooltip { font-family: "DM Sans", sans-serif !important; }</style>'
+    layer_css = """<style>
+    .leaflet-control-layers,
+    .leaflet-popup-content,
+    .leaflet-tooltip {
+        font-family: 'DM Sans', sans-serif !important;
+    }
+    .leaflet-control-layers {
+        border-radius: 14px !important;
+        border: none !important;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.12) !important;
+        padding: 12px 16px !important;
+        background: rgba(255,255,255,0.97) !important;
+        backdrop-filter: blur(8px) !important;
+    }
+    .leaflet-control-layers-separator {
+        border-top: 1px solid #e2e8f0 !important;
+        margin: 8px 0 !important;
+    }
+    .leaflet-control-layers label {
+        font-size: 13.5px !important;
+        font-weight: 500 !important;
+        color: #334155 !important;
+        padding: 3px 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+        cursor: pointer !important;
+        transition: color 0.15s !important;
+    }
+    .leaflet-control-layers label:hover {
+        color: #6366f1 !important;
+    }
+    .leaflet-control-layers-toggle {
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 12px !important;
+        background-color: rgba(255,255,255,0.95) !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+    }
+    .leaflet-tooltip {
+        border-radius: 10px !important;
+        border: none !important;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.1) !important;
+        padding: 6px 12px !important;
+        font-size: 12.5px !important;
+        font-weight: 500 !important;
+    }
+    </style>"""
     m.get_root().header.add_child(folium.Element(font_link))
-    m.get_root().header.add_child(folium.Element(font_css))
+    m.get_root().header.add_child(folium.Element(layer_css))
 
     # Add hover highlight/thicken effect for all polylines via JavaScript
     hover_js = """
