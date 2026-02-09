@@ -1784,7 +1784,7 @@ def render_sidebar() -> Tuple[Optional[str], float]:
         uploaded = st.file_uploader("Upload .wkt / .txt", type=['wkt', 'txt'],
             help="LINESTRING geometries", key=f"file_uploader_{uploader_key}")
         use_demo = st.button("🎯 Load Demo Data", type="primary", use_container_width=True)
-        if uploaded is not None or st.session_state.get('data_source'):
+        if uploaded is not None or use_demo or st.session_state.get('data_source'):
             if st.button("🔄 Clear Loaded Data", use_container_width=True):
                 for key in list(st.session_state.keys()):
                     if key.startswith('example_result_'):
