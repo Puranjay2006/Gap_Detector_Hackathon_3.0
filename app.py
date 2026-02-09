@@ -359,6 +359,55 @@ CUSTOM_CSS = """
     .score-circle.poor { background:linear-gradient(135deg,#ef4444,#dc2626); }
     .score-label { font-size:0.8rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-top:0.4rem; color:var(--gray-600); }
 
+    /* ── Sidebar Toggle Button ── */
+    .sidebar-toggle {
+        position: fixed; top: 0.75rem; left: 0.75rem; z-index: 999999;
+        width: 42px; height: 42px; border-radius: 12px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white; border: none; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.3rem; box-shadow: 0 4px 14px rgba(99,102,241,0.4);
+        transition: all 0.3s ease;
+    }
+    .sidebar-toggle:hover { transform: scale(1.08); box-shadow: 0 6px 20px rgba(99,102,241,0.5); }
+
+    /* ── Mobile Responsive ── */
+    @media (max-width: 768px) {
+        .main .block-container { padding: 1rem 0.75rem 2rem 0.75rem !important; }
+        .hero-container { padding: 1.5rem 1rem; border-radius: 20px; }
+        .hero-title { font-size: 1.6rem !important; }
+        .hero-subtitle { font-size: 0.9rem !important; }
+        .hero-icon { font-size: 2.5rem; }
+        .metric-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 0.6rem !important; }
+        .metric-card { padding: 0.85rem; border-radius: 14px; }
+        .metric-value { font-size: 1.5rem !important; }
+        .metric-label { font-size: 0.7rem !important; }
+        .welcome-card { padding: 1.5rem 1rem; border-radius: 20px; }
+        .welcome-title { font-size: 1.4rem !important; }
+        .welcome-text { font-size: 0.9rem !important; max-width: 100% !important; }
+        .step-list { max-width: 100% !important; }
+        .step-item { padding: 0.7rem 0.8rem; gap: 0.7rem; }
+        .step-text { font-size: 0.85rem; }
+        .stTabs [data-baseweb="tab-list"] { gap: 0.2rem; padding: 0.25rem; overflow-x: auto; flex-wrap: nowrap; }
+        .stTabs [data-baseweb="tab"] { padding: 0.5rem 0.6rem; font-size: 0.75rem; white-space: nowrap; min-width: auto; }
+        .stTabs [data-baseweb="tab-panel"] { padding: 1rem; border-radius: 16px; }
+        .section-header h3 { font-size: 1.1rem !important; }
+        .map-container { border-radius: 14px; border-width: 2px; }
+        .stats-grid { grid-template-columns: 1fr !important; }
+        .score-circle { width: 100px; height: 100px; font-size: 1.75rem; }
+        .legend-box { padding: 0.75rem !important; border-radius: 14px !important; }
+        .legend-grid { grid-template-columns: 1fr !important; }
+        .legend-label { font-size: 0.78rem !important; }
+        [data-testid="stSidebar"] { min-width: 260px !important; max-width: 260px !important; }
+    }
+    @media (max-width: 480px) {
+        .metric-grid { grid-template-columns: 1fr 1fr !important; }
+        .metric-value { font-size: 1.3rem !important; }
+        .hero-title { font-size: 1.3rem !important; }
+        .welcome-title { font-size: 1.2rem !important; }
+        .stTabs [data-baseweb="tab"] { padding: 0.4rem 0.5rem; font-size: 0.7rem; }
+    }
+
     .example-card {
         background: rgba(255,255,255,0.9); border-radius: 20px; padding: 1.5rem;
         border: 1px solid rgba(99,102,241,0.15); margin-bottom: 1.25rem;
@@ -1810,6 +1859,22 @@ def main():
     )
     st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
+    # Sidebar toggle button (works on mobile & desktop)
+    st.markdown("""
+        <button class="sidebar-toggle" onclick="
+            var sidebar = window.parent.document.querySelector('[data-testid=stSidebar]');
+            var btn = window.parent.document.querySelector('[data-testid=collapsedControl]');
+            if (sidebar) {
+                var isHidden = sidebar.getAttribute('aria-expanded') === 'false';
+                if (btn) btn.click();
+                else {
+                    sidebar.style.display = isHidden ? '' : 'none';
+                    sidebar.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+                }
+            }
+        ">☰</button>
+    """, unsafe_allow_html=True)
+
     if 'data_source' not in st.session_state:
         st.session_state['data_source'] = None
 
@@ -1833,6 +1898,19 @@ def main():
             st.markdown(f"""<div style="text-align:center;margin-bottom:1rem;">
                 <span style="background:linear-gradient(135deg,#10b981,#059669);color:white;padding:0.35rem 1.2rem;border-radius:100px;font-size:0.82rem;font-weight:600;letter-spacing:0.02em;">
                 📄 Uploaded File — {len(lines)} Segments Parsed</span></div>""", unsafe_allow_html=True)
+
+        # Clear data button in main area
+        clear_col1, clear_col2, clear_col3 = st.columns([1, 1, 1])
+        with clear_col2:
+            if st.button("✕ Clear Loaded Data", key="main_clear_data", use_container_width=True):
+                uploader_key = st.session_state.get('uploader_key', 0)
+                for key in list(st.session_state.keys()):
+                    if key.startswith('example_result_'):
+                        del st.session_state[key]
+                st.session_state['data_source'] = None
+                st.session_state['uploaded_wkt'] = None
+                st.session_state['uploader_key'] = uploader_key + 1
+                st.rerun()
 
         with st.spinner(f"🔍 Analyzing {len(lines)} segments for endpoint gaps..."):
             # 2. Feature Extraction
