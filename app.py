@@ -1784,14 +1784,15 @@ def render_sidebar() -> Tuple[Optional[str], float]:
         uploaded = st.file_uploader("Upload .wkt / .txt", type=['wkt', 'txt'],
             help="LINESTRING geometries", key=f"file_uploader_{uploader_key}")
         use_demo = st.button("🎯 Load Demo Data", type="primary", use_container_width=True)
-        if st.button("🔄 Clear Loaded Data", use_container_width=True):
-            for key in list(st.session_state.keys()):
-                if key.startswith('example_result_'):
-                    del st.session_state[key]
-            st.session_state['data_source'] = None
-            st.session_state['uploaded_wkt'] = None
-            st.session_state['uploader_key'] = uploader_key + 1
-            st.rerun()
+        if uploaded is not None or st.session_state.get('data_source'):
+            if st.button("🔄 Clear Loaded Data", use_container_width=True):
+                for key in list(st.session_state.keys()):
+                    if key.startswith('example_result_'):
+                        del st.session_state[key]
+                st.session_state['data_source'] = None
+                st.session_state['uploaded_wkt'] = None
+                st.session_state['uploader_key'] = uploader_key + 1
+                st.rerun()
 
         st.divider()
         st.markdown("### ⚙️ ML Sensitivity")
@@ -1859,10 +1860,12 @@ def main():
     st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
     # Sidebar toggle button (works on mobile & desktop)
-    st.markdown("""
+    import streamlit.components.v1 as components
+    components.html("""
         <style>
+            body { margin: 0; background: transparent; overflow: hidden; }
             .sidebar-toggle {
-                position: fixed; top: 0.75rem; left: 0.75rem; z-index: 999999;
+                position: fixed; top: 0.35rem; left: 0.35rem; z-index: 999999;
                 width: 42px; height: 42px; border-radius: 12px;
                 background: linear-gradient(135deg, #6366f1, #4f46e5);
                 color: white; border: none; cursor: pointer;
@@ -1872,29 +1875,27 @@ def main():
             }
             .sidebar-toggle:hover { transform: scale(1.08); box-shadow: 0 6px 20px rgba(99,102,241,0.5); }
         </style>
-        <button class="sidebar-toggle" id="sidebarToggleBtn">☰</button>
+        <button class="sidebar-toggle" id="sidebarToggleBtn">&#9776;</button>
         <script>
-            const toggleBtn = document.getElementById('sidebarToggleBtn');
-            if (toggleBtn) {
-                toggleBtn.addEventListener('click', function() {
-                    const doc = window.parent.document;
-                    const collapseBtn = doc.querySelector('button[data-testid="baseButton-headerNoPadding"]');
-                    if (collapseBtn) { collapseBtn.click(); return; }
-                    const expandBtn = doc.querySelector('[data-testid="collapsedControl"] button');
-                    if (expandBtn) { expandBtn.click(); return; }
-                    const sidebar = doc.querySelector('[data-testid="stSidebar"]');
-                    if (sidebar) {
-                        const expanded = sidebar.getAttribute('aria-expanded');
-                        if (expanded === 'true') {
-                            sidebar.setAttribute('aria-expanded', 'false');
-                        } else {
-                            sidebar.setAttribute('aria-expanded', 'true');
-                        }
-                    }
-                });
-            }
+            document.getElementById('sidebarToggleBtn').addEventListener('click', function() {
+                const doc = window.parent.document;
+                // Try native Streamlit collapse/expand buttons
+                const collapseBtn = doc.querySelector('[data-testid="stSidebar"] button[kind="headerNoPadding"]')
+                    || doc.querySelector('[data-testid="stSidebar"] button[data-testid="baseButton-headerNoPadding"]');
+                if (collapseBtn) { collapseBtn.click(); return; }
+                const expandBtn = doc.querySelector('[data-testid="collapsedControl"]');
+                if (expandBtn) { expandBtn.click(); return; }
+                // Fallback: toggle aria-expanded + CSS transform
+                const sidebar = doc.querySelector('[data-testid="stSidebar"]');
+                if (sidebar) {
+                    const isOpen = sidebar.getAttribute('aria-expanded') !== 'false';
+                    sidebar.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+                    sidebar.style.transform = isOpen ? 'translateX(-100%)' : 'translateX(0)';
+                    sidebar.style.transition = 'transform 0.3s ease';
+                }
+            });
         </script>
-    """, unsafe_allow_html=True)
+    """, height=50)
 
     if 'data_source' not in st.session_state:
         st.session_state['data_source'] = None
