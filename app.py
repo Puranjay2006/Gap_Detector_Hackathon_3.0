@@ -316,7 +316,7 @@ CUSTOM_CSS = """
     .welcome-icon { font-size:5rem; margin-bottom:1rem; animation: pulse 2s ease-in-out infinite; }
     @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
     .welcome-title { font-size:2rem; font-weight:700; color:var(--gray-900); margin-bottom:1rem; }
-    .welcome-text { font-size:1.05rem; color:var(--gray-600); line-height:1.7; max-width:600px; margin:0 auto 2rem auto; text-align:center; }
+    .welcome-text { font-size:1.05rem; color:var(--gray-600); line-height:1.7; max-width:520px; margin:0 auto 2rem auto; text-align:center !important; }
     .step-list { display:flex; flex-direction:column; gap:0.85rem; max-width:480px; margin:0 auto; text-align:left; }
     .step-item {
         display:flex; align-items:center; gap:1rem; padding:0.9rem 1.1rem;
@@ -1499,7 +1499,7 @@ def render_welcome():
         <div class="welcome-card">
             <div class="welcome-icon">🔍</div>
             <h2 class="welcome-title">Route Continuity Gap Detector</h2>
-            <p class="welcome-text">
+            <p class="welcome-text" style="text-align:center !important;">
                 Detects <b>one specific error</b>: endpoint gaps where road segments
                 should connect but have small coordinate mismatches, breaking route
                 continuity. Uses rule-based validation + Isolation Forest ML.
