@@ -1770,9 +1770,11 @@ def render_onboarding():
 
 def render_sidebar() -> Tuple[Optional[str], float]:
     with st.sidebar:
-        # Animated sidebar collapse button
-        st.markdown("""
+        # Animated sidebar collapse button — uses components.html so JS executes
+        import streamlit.components.v1 as components
+        components.html("""
             <style>
+                body { margin: 0; padding: 0; background: transparent; overflow: hidden; }
                 @keyframes toggleFadeIn {
                     from { opacity: 0; transform: translateY(-8px) scale(0.9); }
                     to { opacity: 1; transform: translateY(0) scale(1); }
@@ -1815,48 +1817,42 @@ def render_sidebar() -> Tuple[Optional[str], float]:
                 .sidebar-collapse-btn:hover .hamburger-bar:nth-child(1) { animation: barHover1 0.6s ease; transform: translateX(-1px); }
                 .sidebar-collapse-btn:hover .hamburger-bar:nth-child(2) { animation: barHover2 0.6s ease 0.05s; }
                 .sidebar-collapse-btn:hover .hamburger-bar:nth-child(3) { animation: barHover3 0.6s ease 0.1s; transform: translateX(1px); }
-                .collapse-row { display:flex; align-items:center; gap:10px; margin-bottom:0.3rem; }
-                .collapse-label {
-                    font-size:0.72rem; font-weight:600; letter-spacing:0.5px;
-                    text-transform:uppercase; opacity:0.45; transition: opacity 0.3s;
-                }
-                .collapse-row:hover .collapse-label { opacity: 0.7; }
             </style>
-            <div class="collapse-row" id="collapseRow">
-                <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" title="Hide sidebar">
-                    <div class="hamburger-box">
-                        <span class="hamburger-bar"></span>
-                        <span class="hamburger-bar"></span>
-                        <span class="hamburger-bar"></span>
-                    </div>
-                </button>
-                <span class="collapse-label">Toggle Sidebar</span>
-            </div>
+            <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" title="Hide sidebar">
+                <div class="hamburger-box">
+                    <span class="hamburger-bar"></span>
+                    <span class="hamburger-bar"></span>
+                    <span class="hamburger-bar"></span>
+                </div>
+            </button>
             <script>
-                const btn = document.getElementById('sidebarCollapseBtn');
-                if (btn) {
-                    btn.addEventListener('click', function() {
-                        const doc = window.parent.document;
-                        const selectors = [
-                            '[data-testid="stSidebar"] button[data-testid="baseButton-headerNoPadding"]',
-                            '[data-testid="stSidebar"] button[kind="headerNoPadding"]',
-                            'button[data-testid="stSidebarCollapseButton"]',
-                            '[data-testid="collapsedControl"] button',
-                            '[data-testid="collapsedControl"]'
-                        ];
-                        for (const sel of selectors) {
-                            const el = doc.querySelector(sel);
-                            if (el) { el.click(); return; }
+                document.getElementById('sidebarCollapseBtn').addEventListener('click', function() {
+                    const doc = window.parent.document;
+                    // Try every known Streamlit sidebar collapse/expand selector
+                    const selectors = [
+                        '[data-testid="stSidebar"] button[data-testid="baseButton-headerNoPadding"]',
+                        '[data-testid="stSidebar"] button[kind="headerNoPadding"]',
+                        'button[data-testid="stSidebarCollapseButton"]',
+                        '[data-testid="baseButton-header"]',
+                        '[data-testid="collapsedControl"] button',
+                        '[data-testid="collapsedControl"]'
+                    ];
+                    for (const sel of selectors) {
+                        const el = doc.querySelector(sel);
+                        if (el) { el.click(); return; }
+                    }
+                    // Final fallback: find any close/chevron button inside sidebar
+                    const sidebar = doc.querySelector('[data-testid="stSidebar"]');
+                    if (sidebar) {
+                        const btns = sidebar.querySelectorAll('button');
+                        for (const b of btns) {
+                            if (b.offsetWidth < 50 && b.offsetHeight < 50) { b.click(); return; }
                         }
-                        const sidebar = doc.querySelector('[data-testid="stSidebar"]');
-                        if (sidebar) {
-                            const open = sidebar.getAttribute('aria-expanded') !== 'false';
-                            sidebar.setAttribute('aria-expanded', open ? 'false' : 'true');
-                        }
-                    });
-                }
+                        sidebar.setAttribute('aria-expanded', 'false');
+                    }
+                });
             </script>
-        """, unsafe_allow_html=True)
+        """, height=48)
 
         st.markdown(f"""
             <div style="text-align:center;padding:0.5rem 0 1rem;">
