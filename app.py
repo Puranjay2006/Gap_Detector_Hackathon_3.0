@@ -1859,92 +1859,48 @@ def main():
     )
     st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
-    # Floating button to re-open sidebar when it's collapsed
-    # Injects button directly into top-level document so it's not trapped in an iframe
-    import streamlit.components.v1 as components
-    components.html("""
-        <script>
-        (function() {
-            // Walk up to top-level document
-            var topDoc = window.parent.document;
-            try { while (topDoc.defaultView && topDoc.defaultView.parent !== topDoc.defaultView) { topDoc = topDoc.defaultView.parent.document; } } catch(err) {}
-
-            // Don't add duplicate buttons
-            if (topDoc.getElementById('reopenSidebarBtn')) return;
-
-            // Inject CSS into parent
-            var style = topDoc.createElement('style');
-            style.textContent = [
-                '@keyframes rsb-slideIn { from { opacity:0; transform:translateX(-20px) scale(0.8); } to { opacity:1; transform:translateX(0) scale(1); } }',
-                '@keyframes rsb-pulse { 0%,100% { box-shadow:0 4px 14px rgba(99,102,241,0.35); } 50% { box-shadow:0 6px 22px rgba(99,102,241,0.55); } }',
-                '#reopenSidebarBtn {',
-                '  position:fixed; top:14px; left:14px; z-index:999999;',
-                '  width:48px; height:48px; border-radius:14px;',
-                '  background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 100%);',
-                '  color:white; border:2px solid rgba(255,255,255,0.2); cursor:pointer;',
-                '  display:none; align-items:center; justify-content:center;',
-                '  font-size:1.5rem; font-family:sans-serif;',
-                '  box-shadow:0 4px 14px rgba(99,102,241,0.35);',
-                '  transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);',
-                '  animation:rsb-pulse 2.5s ease-in-out infinite;',
-                '  pointer-events:auto;',
-                '}',
-                '#reopenSidebarBtn.rsb-visible {',
-                '  display:flex !important;',
-                '  animation:rsb-slideIn 0.4s cubic-bezier(0.34,1.56,0.64,1), rsb-pulse 2.5s ease-in-out 0.4s infinite;',
-                '}',
-                '#reopenSidebarBtn:hover { transform:scale(1.15) rotate(3deg); box-shadow:0 8px 28px rgba(99,102,241,0.55); }',
-                '#reopenSidebarBtn:active { transform:scale(0.92); }'
-            ].join('\\n');
-            topDoc.head.appendChild(style);
-
-            // Create button in parent document
-            var btn = topDoc.createElement('button');
-            btn.id = 'reopenSidebarBtn';
-            btn.title = 'Show sidebar';
-            btn.innerHTML = '\u2630';
-            topDoc.body.appendChild(btn);
-
-            // Poll sidebar state
-            function checkSidebar() {
-                var sidebar = topDoc.querySelector('[data-testid="stSidebar"]');
-                var collapsed = !sidebar || sidebar.getAttribute('aria-expanded') === 'false';
-                if (collapsed) {
-                    btn.classList.add('rsb-visible');
-                } else {
-                    btn.classList.remove('rsb-visible');
-                }
+    # Style Streamlit's native sidebar expand button (the arrow that appears when collapsed)
+    # This is pure CSS — no JS needed, no iframe issues
+    st.markdown("""
+        <style>
+            /* Style the native Streamlit collapsed sidebar control */
+            [data-testid="collapsedControl"] {
+                position: fixed !important;
+                top: 12px !important;
+                left: 12px !important;
+                z-index: 999999 !important;
+                display: flex !important;
             }
-            setInterval(checkSidebar, 250);
-            checkSidebar();
-
-            // Click handler — re-open sidebar
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                // Try every known expand selector
-                var selectors = [
-                    '[data-testid="collapsedControl"] button',
-                    '[data-testid="collapsedControl"]',
-                    '[data-testid="stSidebarCollapsedControl"] button',
-                    'button[data-testid="baseButton-headerNoPadding"]',
-                    '[data-testid="stSidebarCollapseButton"]'
-                ];
-                for (var i = 0; i < selectors.length; i++) {
-                    var el = topDoc.querySelector(selectors[i]);
-                    if (el) { el.click(); return; }
-                }
-                // Fallback: directly expand sidebar via DOM
-                var sidebar = topDoc.querySelector('[data-testid="stSidebar"]');
-                if (sidebar) {
-                    sidebar.setAttribute('aria-expanded', 'true');
-                    sidebar.style.marginLeft = '0';
-                    sidebar.style.transition = 'margin-left 0.3s ease';
-                }
-            });
-        })();
-        </script>
-    """, height=0)
+            [data-testid="collapsedControl"] button {
+                width: 46px !important;
+                height: 46px !important;
+                border-radius: 14px !important;
+                background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+                color: white !important;
+                border: 2px solid rgba(255,255,255,0.15) !important;
+                box-shadow: 0 4px 18px rgba(99,102,241,0.45) !important;
+                transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+                animation: nativeTogglePulse 2.5s ease-in-out infinite;
+            }
+            [data-testid="collapsedControl"] button:hover {
+                transform: scale(1.12) rotate(3deg) !important;
+                box-shadow: 0 8px 28px rgba(99,102,241,0.55) !important;
+            }
+            [data-testid="collapsedControl"] button:active {
+                transform: scale(0.92) !important;
+            }
+            [data-testid="collapsedControl"] button svg {
+                width: 22px !important;
+                height: 22px !important;
+                fill: white !important;
+                stroke: white !important;
+            }
+            @keyframes nativeTogglePulse {
+                0%, 100% { box-shadow: 0 4px 18px rgba(99,102,241,0.4); }
+                50% { box-shadow: 0 6px 24px rgba(99,102,241,0.6); }
+            }
+        </style>
+    """, unsafe_allow_html=True)
 
     if 'data_source' not in st.session_state:
         st.session_state['data_source'] = None
