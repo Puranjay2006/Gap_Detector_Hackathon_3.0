@@ -311,12 +311,13 @@ CUSTOM_CSS = """
     .welcome-card {
         background: rgba(255,255,255,0.92); backdrop-filter: blur(20px);
         border: 1px solid rgba(255,255,255,0.5); border-radius: 28px;
-        padding: 3rem; text-align: center; box-shadow: var(--shadow-xl);
+        padding: 3rem; text-align: center !important; box-shadow: var(--shadow-xl);
+        display:flex; flex-direction:column; align-items:center; justify-content:center;
     }
     .welcome-icon { font-size:5rem; margin-bottom:1rem; animation: pulse 2s ease-in-out infinite; }
     @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
-    .welcome-title { font-size:2rem; font-weight:700; color:var(--gray-900); margin-bottom:1rem; }
-    .welcome-text { font-size:1.05rem; color:var(--gray-600); line-height:1.7; max-width:520px; margin:0 auto 2rem auto; text-align:center !important; }
+    .welcome-title { font-size:2rem; font-weight:700; color:var(--gray-900); margin-bottom:1rem; text-align:center !important; width:100%; }
+    .welcome-text { font-size:1.05rem; color:var(--gray-600); line-height:1.7; max-width:520px; margin:0 auto 2rem auto; text-align:center !important; width:100%; }
     .step-list { display:flex; flex-direction:column; gap:0.85rem; max-width:480px; margin:0 auto; text-align:left; }
     .step-item {
         display:flex; align-items:center; gap:1rem; padding:0.9rem 1.1rem;
