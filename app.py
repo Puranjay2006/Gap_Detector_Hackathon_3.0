@@ -1784,15 +1784,14 @@ def render_sidebar() -> Tuple[Optional[str], float]:
         uploaded = st.file_uploader("Upload .wkt / .txt", type=['wkt', 'txt'],
             help="LINESTRING geometries", key=f"file_uploader_{uploader_key}")
         use_demo = st.button("🎯 Load Demo Data", type="primary", use_container_width=True)
-        if uploaded is not None or st.session_state.get('data_source'):
-            if st.button("🔄 Clear Loaded Data", use_container_width=True):
-                for key in list(st.session_state.keys()):
-                    if key.startswith('example_result_'):
-                        del st.session_state[key]
-                st.session_state['data_source'] = None
-                st.session_state['uploaded_wkt'] = None
-                st.session_state['uploader_key'] = uploader_key + 1
-                st.rerun()
+        if st.button("🔄 Clear Loaded Data", use_container_width=True):
+            for key in list(st.session_state.keys()):
+                if key.startswith('example_result_'):
+                    del st.session_state[key]
+            st.session_state['data_source'] = None
+            st.session_state['uploaded_wkt'] = None
+            st.session_state['uploader_key'] = uploader_key + 1
+            st.rerun()
 
         st.divider()
         st.markdown("### ⚙️ ML Sensitivity")
@@ -1861,18 +1860,40 @@ def main():
 
     # Sidebar toggle button (works on mobile & desktop)
     st.markdown("""
-        <button class="sidebar-toggle" onclick="
-            var sidebar = window.parent.document.querySelector('[data-testid=stSidebar]');
-            var btn = window.parent.document.querySelector('[data-testid=collapsedControl]');
-            if (sidebar) {
-                var isHidden = sidebar.getAttribute('aria-expanded') === 'false';
-                if (btn) btn.click();
-                else {
-                    sidebar.style.display = isHidden ? '' : 'none';
-                    sidebar.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
-                }
+        <style>
+            .sidebar-toggle {
+                position: fixed; top: 0.75rem; left: 0.75rem; z-index: 999999;
+                width: 42px; height: 42px; border-radius: 12px;
+                background: linear-gradient(135deg, #6366f1, #4f46e5);
+                color: white; border: none; cursor: pointer;
+                display: flex; align-items: center; justify-content: center;
+                font-size: 1.3rem; box-shadow: 0 4px 14px rgba(99,102,241,0.4);
+                transition: all 0.3s ease;
             }
-        ">☰</button>
+            .sidebar-toggle:hover { transform: scale(1.08); box-shadow: 0 6px 20px rgba(99,102,241,0.5); }
+        </style>
+        <button class="sidebar-toggle" id="sidebarToggleBtn">☰</button>
+        <script>
+            const toggleBtn = document.getElementById('sidebarToggleBtn');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    const doc = window.parent.document;
+                    const collapseBtn = doc.querySelector('button[data-testid="baseButton-headerNoPadding"]');
+                    if (collapseBtn) { collapseBtn.click(); return; }
+                    const expandBtn = doc.querySelector('[data-testid="collapsedControl"] button');
+                    if (expandBtn) { expandBtn.click(); return; }
+                    const sidebar = doc.querySelector('[data-testid="stSidebar"]');
+                    if (sidebar) {
+                        const expanded = sidebar.getAttribute('aria-expanded');
+                        if (expanded === 'true') {
+                            sidebar.setAttribute('aria-expanded', 'false');
+                        } else {
+                            sidebar.setAttribute('aria-expanded', 'true');
+                        }
+                    }
+                });
+            }
+        </script>
     """, unsafe_allow_html=True)
 
     if 'data_source' not in st.session_state:
@@ -1898,19 +1919,6 @@ def main():
             st.markdown(f"""<div style="text-align:center;margin-bottom:1rem;">
                 <span style="background:linear-gradient(135deg,#10b981,#059669);color:white;padding:0.35rem 1.2rem;border-radius:100px;font-size:0.82rem;font-weight:600;letter-spacing:0.02em;">
                 📄 Uploaded File — {len(lines)} Segments Parsed</span></div>""", unsafe_allow_html=True)
-
-        # Clear data button in main area
-        clear_col1, clear_col2, clear_col3 = st.columns([1, 1, 1])
-        with clear_col2:
-            if st.button("✕ Clear Loaded Data", key="main_clear_data", use_container_width=True):
-                uploader_key = st.session_state.get('uploader_key', 0)
-                for key in list(st.session_state.keys()):
-                    if key.startswith('example_result_'):
-                        del st.session_state[key]
-                st.session_state['data_source'] = None
-                st.session_state['uploaded_wkt'] = None
-                st.session_state['uploader_key'] = uploader_key + 1
-                st.rerun()
 
         with st.spinner(f"🔍 Analyzing {len(lines)} segments for endpoint gaps..."):
             # 2. Feature Extraction
