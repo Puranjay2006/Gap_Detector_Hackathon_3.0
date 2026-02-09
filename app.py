@@ -1943,6 +1943,87 @@ def main():
     )
     st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
+    # Floating button to re-open sidebar when it's collapsed
+    import streamlit.components.v1 as components
+    components.html("""
+        <style>
+            body { margin: 0; padding: 0; background: transparent; overflow: visible; }
+            @keyframes slideInLeft {
+                from { opacity: 0; transform: translateX(-20px) scale(0.8); }
+                to { opacity: 1; transform: translateX(0) scale(1); }
+            }
+            @keyframes gentlePulse {
+                0%, 100% { box-shadow: 0 4px 14px rgba(99,102,241,0.35); }
+                50% { box-shadow: 0 6px 22px rgba(99,102,241,0.55); }
+            }
+            .reopen-sidebar-btn {
+                position: fixed; top: 14px; left: 14px; z-index: 999999;
+                width: 44px; height: 44px; border-radius: 14px;
+                background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+                color: white; border: none; cursor: pointer;
+                display: none; align-items: center; justify-content: center;
+                font-size: 1.4rem;
+                box-shadow: 0 4px 14px rgba(99,102,241,0.35);
+                transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+                animation: gentlePulse 2.5s ease-in-out infinite;
+            }
+            .reopen-sidebar-btn.visible {
+                display: flex;
+                animation: slideInLeft 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), gentlePulse 2.5s ease-in-out 0.4s infinite;
+            }
+            .reopen-sidebar-btn:hover {
+                transform: scale(1.15) rotate(3deg);
+                box-shadow: 0 8px 28px rgba(99,102,241,0.55);
+            }
+            .reopen-sidebar-btn:active { transform: scale(0.92); }
+            .reopen-arrow { transition: transform 0.3s ease; }
+            .reopen-sidebar-btn:hover .reopen-arrow { transform: translateX(2px); }
+        </style>
+        <button class="reopen-sidebar-btn" id="reopenSidebarBtn" title="Show sidebar">
+            <span class="reopen-arrow">&#9776;</span>
+        </button>
+        <script>
+            const btn = document.getElementById('reopenSidebarBtn');
+            function checkSidebar() {
+                const doc = window.parent.document;
+                const sidebar = doc.querySelector('[data-testid="stSidebar"]');
+                const collapsed = !sidebar || sidebar.getAttribute('aria-expanded') === 'false'
+                    || sidebar.offsetWidth < 10;
+                if (collapsed) {
+                    btn.classList.add('visible');
+                } else {
+                    btn.classList.remove('visible');
+                }
+            }
+            // Poll for sidebar state changes
+            setInterval(checkSidebar, 300);
+            checkSidebar();
+
+            btn.addEventListener('click', function() {
+                const doc = window.parent.document;
+                // Try native Streamlit expand controls
+                const selectors = [
+                    '[data-testid="collapsedControl"] button',
+                    '[data-testid="collapsedControl"]',
+                    'button[data-testid="stSidebarCollapseButton"]',
+                    '[data-testid="stSidebar"] button[data-testid="baseButton-headerNoPadding"]'
+                ];
+                for (const sel of selectors) {
+                    const el = doc.querySelector(sel);
+                    if (el) { el.click(); btn.classList.remove('visible'); return; }
+                }
+                // Fallback: force sidebar open
+                const sidebar = doc.querySelector('[data-testid="stSidebar"]');
+                if (sidebar) {
+                    sidebar.setAttribute('aria-expanded', 'true');
+                    sidebar.style.transform = 'translateX(0)';
+                    sidebar.style.transition = 'transform 0.3s ease';
+                    btn.classList.remove('visible');
+                }
+            });
+        </script>
+    """, height=0)
+
     if 'data_source' not in st.session_state:
         st.session_state['data_source'] = None
 
