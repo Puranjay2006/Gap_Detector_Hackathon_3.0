@@ -316,7 +316,7 @@ CUSTOM_CSS = """
     .welcome-icon { font-size:5rem; margin-bottom:1rem; animation: pulse 2s ease-in-out infinite; }
     @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
     .welcome-title { font-size:2rem; font-weight:700; color:var(--gray-900); margin-bottom:1rem; }
-    .welcome-text { font-size:1.05rem; color:var(--gray-600); line-height:1.7; max-width:600px; margin:0 auto 2rem auto; }
+    .welcome-text { font-size:1.05rem; color:var(--gray-600); line-height:1.7; max-width:600px; margin:0 auto 2rem auto; text-align:center; }
     .step-list { display:flex; flex-direction:column; gap:0.85rem; max-width:480px; margin:0 auto; text-align:left; }
     .step-item {
         display:flex; align-items:center; gap:1rem; padding:0.9rem 1.1rem;
