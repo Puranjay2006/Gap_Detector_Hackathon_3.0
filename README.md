@@ -105,6 +105,20 @@ Gap_Detector_Hackathon_3.0/
 
 ---
 
+## 📂 Demo Datasets
+
+We have provided several test datasets in the `demo_files/` directory to help you test the application immediately. Click the links below to view or download them:
+
+| File Name | Description | Link |
+|-----------|-------------|------|
+| **clean_network.wkt** | A perfect network with no errors. Good for baseline testing. | [View / Download](https://github.com/Puranjay2006/Gap_Detector_Hackathon_3.0/blob/main/demo_files/clean_network.wkt) |
+| **endpoint_gaps.wkt** | Contains deliberate endpoint gaps (broken connectivity). | [View / Download](https://github.com/Puranjay2006/Gap_Detector_Hackathon_3.0/blob/main/demo_files/endpoint_gaps.wkt) |
+| **errors_mixed.wkt** | A complex scenario with mixed error types. | [View / Download](https://github.com/Puranjay2006/Gap_Detector_Hackathon_3.0/blob/main/demo_files/errors_mixed.wkt) |
+| **isolated_segments.wkt** | Contains segments that are completely disconnected (islands). | [View / Download](https://github.com/Puranjay2006/Gap_Detector_Hackathon_3.0/blob/main/demo_files/isolated_segments.wkt) |
+| **short_segments.wkt** | Contains extremely short segments that may be noise. | [View / Download](https://github.com/Puranjay2006/Gap_Detector_Hackathon_3.0/blob/main/demo_files/short_segments.wkt) |
+
+---
+
 ## 📊 Input Format
 
 The tool accepts `.wkt` or `.txt` files with WKT LINESTRING geometries:
