@@ -1770,8 +1770,96 @@ def render_onboarding():
 
 def render_sidebar() -> Tuple[Optional[str], float]:
     with st.sidebar:
+        # Animated sidebar collapse button
+        st.markdown("""
+            <style>
+                @keyframes toggleFadeIn {
+                    from { opacity: 0; transform: translateY(-8px) scale(0.9); }
+                    to { opacity: 1; transform: translateY(0) scale(1); }
+                }
+                @keyframes togglePulse {
+                    0%, 100% { box-shadow: 0 4px 14px rgba(99,102,241,0.35); }
+                    50% { box-shadow: 0 6px 24px rgba(99,102,241,0.55); }
+                }
+                @keyframes barHover1 { 0%,100% { width: 18px; } 50% { width: 12px; } }
+                @keyframes barHover2 { 0%,100% { width: 18px; } 50% { width: 16px; } }
+                @keyframes barHover3 { 0%,100% { width: 18px; } 50% { width: 10px; } }
+                .sidebar-collapse-btn {
+                    display: flex; align-items: center; justify-content: center;
+                    width: 40px; height: 40px; border-radius: 12px;
+                    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #6366f1 100%);
+                    background-size: 200% 200%;
+                    color: white; border: none; cursor: pointer;
+                    box-shadow: 0 4px 14px rgba(99,102,241,0.35);
+                    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+                    animation: toggleFadeIn 0.5s ease-out, togglePulse 3s ease-in-out infinite;
+                    position: relative; overflow: hidden;
+                }
+                .sidebar-collapse-btn::before {
+                    content: ''; position: absolute; inset: 0;
+                    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+                    border-radius: 12px; opacity: 0; transition: opacity 0.3s;
+                }
+                .sidebar-collapse-btn:hover {
+                    transform: scale(1.12) rotate(-3deg);
+                    box-shadow: 0 8px 28px rgba(99,102,241,0.5);
+                    background-position: 100% 100%;
+                }
+                .sidebar-collapse-btn:hover::before { opacity: 1; }
+                .sidebar-collapse-btn:active { transform: scale(0.95); }
+                .hamburger-box { display:flex; flex-direction:column; gap:3px; align-items:center; }
+                .hamburger-bar {
+                    width: 18px; height: 2.5px; border-radius: 2px;
+                    background: white; transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+                }
+                .sidebar-collapse-btn:hover .hamburger-bar:nth-child(1) { animation: barHover1 0.6s ease; transform: translateX(-1px); }
+                .sidebar-collapse-btn:hover .hamburger-bar:nth-child(2) { animation: barHover2 0.6s ease 0.05s; }
+                .sidebar-collapse-btn:hover .hamburger-bar:nth-child(3) { animation: barHover3 0.6s ease 0.1s; transform: translateX(1px); }
+                .collapse-row { display:flex; align-items:center; gap:10px; margin-bottom:0.3rem; }
+                .collapse-label {
+                    font-size:0.72rem; font-weight:600; letter-spacing:0.5px;
+                    text-transform:uppercase; opacity:0.45; transition: opacity 0.3s;
+                }
+                .collapse-row:hover .collapse-label { opacity: 0.7; }
+            </style>
+            <div class="collapse-row" id="collapseRow">
+                <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" title="Hide sidebar">
+                    <div class="hamburger-box">
+                        <span class="hamburger-bar"></span>
+                        <span class="hamburger-bar"></span>
+                        <span class="hamburger-bar"></span>
+                    </div>
+                </button>
+                <span class="collapse-label">Toggle Sidebar</span>
+            </div>
+            <script>
+                const btn = document.getElementById('sidebarCollapseBtn');
+                if (btn) {
+                    btn.addEventListener('click', function() {
+                        const doc = window.parent.document;
+                        const selectors = [
+                            '[data-testid="stSidebar"] button[data-testid="baseButton-headerNoPadding"]',
+                            '[data-testid="stSidebar"] button[kind="headerNoPadding"]',
+                            'button[data-testid="stSidebarCollapseButton"]',
+                            '[data-testid="collapsedControl"] button',
+                            '[data-testid="collapsedControl"]'
+                        ];
+                        for (const sel of selectors) {
+                            const el = doc.querySelector(sel);
+                            if (el) { el.click(); return; }
+                        }
+                        const sidebar = doc.querySelector('[data-testid="stSidebar"]');
+                        if (sidebar) {
+                            const open = sidebar.getAttribute('aria-expanded') !== 'false';
+                            sidebar.setAttribute('aria-expanded', open ? 'false' : 'true');
+                        }
+                    });
+                }
+            </script>
+        """, unsafe_allow_html=True)
+
         st.markdown(f"""
-            <div style="text-align:center;padding:1rem 0;">
+            <div style="text-align:center;padding:0.5rem 0 1rem;">
                 <div style="font-size:2.5rem;margin-bottom:0.4rem;">🔍</div>
                 <h2 style="margin:0;font-weight:800;font-size:1.4rem;">Gap Detector</h2>
                 <p style="margin:0.2rem 0 0;font-size:0.8rem;opacity:0.7;">v{APP_CONFIG['version']} • {APP_CONFIG['team']}</p>
@@ -1858,44 +1946,6 @@ def main():
         initial_sidebar_state="expanded",
     )
     st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
-
-    # Sidebar toggle button (works on mobile & desktop)
-    import streamlit.components.v1 as components
-    components.html("""
-        <style>
-            body { margin: 0; background: transparent; overflow: hidden; }
-            .sidebar-toggle {
-                position: fixed; top: 0.35rem; left: 0.35rem; z-index: 999999;
-                width: 42px; height: 42px; border-radius: 12px;
-                background: linear-gradient(135deg, #6366f1, #4f46e5);
-                color: white; border: none; cursor: pointer;
-                display: flex; align-items: center; justify-content: center;
-                font-size: 1.3rem; box-shadow: 0 4px 14px rgba(99,102,241,0.4);
-                transition: all 0.3s ease;
-            }
-            .sidebar-toggle:hover { transform: scale(1.08); box-shadow: 0 6px 20px rgba(99,102,241,0.5); }
-        </style>
-        <button class="sidebar-toggle" id="sidebarToggleBtn">&#9776;</button>
-        <script>
-            document.getElementById('sidebarToggleBtn').addEventListener('click', function() {
-                const doc = window.parent.document;
-                // Try native Streamlit collapse/expand buttons
-                const collapseBtn = doc.querySelector('[data-testid="stSidebar"] button[kind="headerNoPadding"]')
-                    || doc.querySelector('[data-testid="stSidebar"] button[data-testid="baseButton-headerNoPadding"]');
-                if (collapseBtn) { collapseBtn.click(); return; }
-                const expandBtn = doc.querySelector('[data-testid="collapsedControl"]');
-                if (expandBtn) { expandBtn.click(); return; }
-                // Fallback: toggle aria-expanded + CSS transform
-                const sidebar = doc.querySelector('[data-testid="stSidebar"]');
-                if (sidebar) {
-                    const isOpen = sidebar.getAttribute('aria-expanded') !== 'false';
-                    sidebar.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
-                    sidebar.style.transform = isOpen ? 'translateX(-100%)' : 'translateX(0)';
-                    sidebar.style.transition = 'transform 0.3s ease';
-                }
-            });
-        </script>
-    """, height=50)
 
     if 'data_source' not in st.session_state:
         st.session_state['data_source'] = None
