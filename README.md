@@ -1,4 +1,4 @@
-# 🔍 Route Continuity Gap Detector
+# Route Continuity Gap Detector
 
 **AI-powered QA tool that detects endpoint gaps in road network data** — where road segments should connect but have small coordinate mismatches, breaking route continuity.
 
