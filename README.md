@@ -1,6 +1,6 @@
 # Route Continuity Gap Detector
 
-**AI-powered QA tool that detects endpoint gaps in road network data** — where road segments should connect but have small coordinate mismatches, breaking route continuity.
+**AI-powered Quality Assurance (QA) tool that detects endpoint gaps in road network data** — where road segments should connect but have small coordinate mismatches, breaking route continuity.
 
 Built for **IIT Mandi Hackathon 3.0** | Team **FutureFormers** | Company: **Axes Systems GmbH** | Problem Statement 2, Option B
 
